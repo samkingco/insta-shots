@@ -1,0 +1,36 @@
+@font-face {
+  font-family: "Text";
+  src: url("./fonts/Text.woff2") format("woff2");
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Text";
+  src: url("./fonts/TextBold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "Text";
+  src: url("./fonts/TextBoldItalic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: bold;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  text-rendering: geometricPrecision;
+}
