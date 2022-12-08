@@ -101,6 +101,7 @@ export default function Index() {
       { name: "Text", weight: "normal" },
       { name: "Text", weight: "bold" },
       { name: "Text", weight: "bold", style: "italic" },
+      { name: "Mono", weight: "normal" },
     ].map(({ name, ...data }) => {
       const obs = new FontFaceObserver(name, data);
       return obs.load();
