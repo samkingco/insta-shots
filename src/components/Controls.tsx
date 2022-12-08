@@ -1,30 +1,31 @@
-import React, { useReducer, useEffect } from "react";
 import styled from "@emotion/styled";
+import React, { useEffect, useReducer } from "react";
 
 interface ControlsState {
   drawScale: number;
   drawX: number;
   drawY: number;
   showGuides: boolean;
+  darkMode: boolean;
 }
 
 const maxStateValues = {
   drawScale: 1,
   drawX: 2,
-  drawY: 2
+  drawY: 2,
 };
 
 const minStateValues = {
   drawScale: 0,
   drawX: 0,
-  drawY: 0
+  drawY: 0,
 };
 
 const toDecimal = (num: number, decimal: number) =>
   Number(num.toFixed(decimal));
 
 export type NumberDrawValueName = "drawScale" | "drawX" | "drawY";
-export type BooleanDrawValueName = "showGuides";
+export type BooleanDrawValueName = "showGuides" | "darkMode";
 
 export type ControlsAction =
   | {
@@ -51,17 +52,17 @@ const controlsReducer = (state: ControlsState, action: ControlsAction) => {
     case "incrementDrawValue":
       return {
         ...state,
-        [action.name]: toDecimal(state[action.name] + action.step, 2)
+        [action.name]: toDecimal(state[action.name] + action.step, 2),
       };
     case "decrementDrawValue":
       return {
         ...state,
-        [action.name]: toDecimal(state[action.name] - action.step, 2)
+        [action.name]: toDecimal(state[action.name] - action.step, 2),
       };
     case "toggleDrawValue":
       return {
         ...state,
-        [action.name]: !state[action.name]
+        [action.name]: !state[action.name],
       };
     case "reset":
       return action.state;
@@ -112,7 +113,8 @@ const FileButton = styled.div`
 
   label {
     width: 100%;
-    display: inline-block;
+    display: inline-flex;
+    gap: 4px;
     padding: 8px;
     border-radius: 2px;
     background: #ffffff;
@@ -158,15 +160,14 @@ const IconButton = styled(Button)`
   font-family: "Material Icons";
 `;
 
-export const Controls: React.FC<Props> = props => {
-  const {
-    scaleStep,
-    xStep,
-    yStep,
-    onChange,
-    onFileChange,
-    initialControlsState
-  } = props;
+export function Controls({
+  scaleStep,
+  xStep,
+  yStep,
+  onChange,
+  onFileChange,
+  initialControlsState,
+}: Props) {
   const [state, dispatch] = useReducer(controlsReducer, initialControlsState);
 
   const incrementDrawValue = (name: NumberDrawValueName, step: number) => {
@@ -194,7 +195,9 @@ export const Controls: React.FC<Props> = props => {
       <Row>
         <ButtonGroup>
           <FileButton>
-            <label htmlFor="imageInput">attach_file</label>
+            <label htmlFor="imageInput">
+              attach_file <span className="mono">Upload</span>
+            </label>
             <input
               id="imageInput"
               type="file"
@@ -205,7 +208,13 @@ export const Controls: React.FC<Props> = props => {
         </ButtonGroup>
 
         <ButtonGroup>
-          <IconButton onClick={reset}>refresh</IconButton>
+          <IconButton onClick={() => toggleDrawValue("showGuides")}>
+            straighten
+          </IconButton>
+
+          <IconButton onClick={() => toggleDrawValue("darkMode")}>
+            {state.darkMode ? "light_mode" : "dark_mode"}
+          </IconButton>
         </ButtonGroup>
       </Row>
 
@@ -255,11 +264,9 @@ export const Controls: React.FC<Props> = props => {
         </ButtonGroup>
 
         <ButtonGroup>
-          <IconButton onClick={() => toggleDrawValue("showGuides")}>
-            waves
-          </IconButton>
+          <IconButton onClick={reset}>refresh</IconButton>
         </ButtonGroup>
       </Row>
     </Wrapper>
   );
-};
+}

@@ -1,61 +1,53 @@
-import exif from "exif-js";
+import { format } from "date-fns";
+import exifr from "exifr";
 
-export interface Exif {
+const CAMERA_MAKE_MAP: Record<any, string> = {
+  FUJIFILM: "Fujifilm",
+};
+
+const CAMERA_MODEL_MAP: Record<any, string> = {
+  "ILCE-7": "A7",
+};
+
+const LENS_MAP: Record<any, string> = {
+  "GF32-64mmF4 R LM WR": "GF 32-64mm ƒ4",
+};
+
+export type Exif = {
   focal: string;
-  fnumber: string;
-  shutter: string;
+  aperture: string;
+  exposure: string;
   iso: string;
   camera: string;
+  lens: string;
   captureDate: string;
-}
+};
 
 export async function getExifFromFile(file: File): Promise<Exif | null> {
   const arrayBuffer = await new Response(file).arrayBuffer();
 
-  const exifData = exif.readFromBinaryFile(arrayBuffer);
-  console.log(exifData);
+  const exif = await exifr.parse(arrayBuffer, { iptc: true });
+  const exposure = `1/${Math.floor(1 / exif.ExposureTime)}s`;
+  const aperture = `ƒ/${exif.FNumber}`;
+  const iso = `ISO ${exif.ISO}`;
+  const focal = `${exif.FocalLength}mm`;
 
-  const {
-    FocalLengthIn35mmFilm,
-    FNumber,
-    ExposureTime,
-    ISOSpeedRatings,
-    Make,
-    Model,
-    DateTimeOriginal
-  } = exifData;
+  const camera = `${CAMERA_MAKE_MAP[exif.Make] || exif.Make} ${
+    CAMERA_MODEL_MAP[exif.Model] || exif.Model
+  }`;
+  const lens = `${CAMERA_MAKE_MAP[exif.LensMake] || exif.LensMake} ${
+    LENS_MAP[exif.LensModel] || exif.LensModel
+  }`;
 
-  const values = [
-    FocalLengthIn35mmFilm,
-    FNumber,
-    ExposureTime,
-    ISOSpeedRatings,
-    Make,
-    Model,
-    DateTimeOriginal
-  ];
-
-  if (values.some(i => i === undefined)) {
-    return null;
-  }
-
-  const focal = `${FocalLengthIn35mmFilm}`;
-  const fnumber = FNumber.toFixed(1);
-  const shutter =
-    ExposureTime.valueOf() > 1
-      ? `${ExposureTime.valueOf()}`
-      : `1/${1 / ExposureTime.valueOf()}`;
-  const iso = `${ISOSpeedRatings}`;
-  const camera = `${Make} ${Model === "ILCE-7" ? "A7" : Model}`;
-  const [date] = DateTimeOriginal.split(" ");
-  const captureDate = date.replace(/:/g, "-");
+  const captureDate = format(new Date(exif.CreateDate), "yyyy-MM-dd");
 
   return {
     focal,
-    fnumber,
-    shutter,
+    aperture,
+    exposure,
     iso,
     camera,
-    captureDate
+    lens,
+    captureDate,
   };
 }

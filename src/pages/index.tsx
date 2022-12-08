@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useReducer } from "react";
-import FontFaceObserver from "fontfaceobserver";
-import { getExifFromFile, Exif } from "./utils/exif";
-import { GlobalStyles } from "./GlobalStyles";
-import { Controls } from "./Controls";
-import { CanvasHero } from "./CanvasHero";
-import { CanvasExif } from "./CanvasExif";
-import { CanvasPano } from "./CanvasPano";
-import { PostImages } from "./PostImages";
-import { Div100vh } from "./Div100vh";
 import styled from "@emotion/styled";
+import FontFaceObserver from "fontfaceobserver";
+import { useEffect, useReducer, useState } from "react";
+import { CanvasExif } from "../components/CanvasExif";
+import { CanvasHero } from "../components/CanvasHero";
+import { CanvasPano } from "../components/CanvasPano";
+import { Controls } from "../components/Controls";
+import { Div100vh } from "../components/Div100vh";
+import { GlobalStyles } from "../components/GlobalStyles";
+import { PostImages } from "../components/PostImages";
+import { Exif, getExifFromFile } from "../utils/exif";
 
 const POST_WIDTH = 1080;
 const POST_HEIGHT = 1350;
@@ -33,20 +33,20 @@ const exportReducer = (state: ExportState, action: ExportAction) => {
     case "setUrl":
       return {
         ...state,
-        [action.name]: action.url
+        [action.name]: action.url,
       };
     case "setIndexedUrl":
       return {
         ...state,
         [action.name]: {
           ...state[action.name],
-          [action.index]: action.url
-        }
+          [action.index]: action.url,
+        },
       };
     case "clearIndexed":
       return {
         ...state,
-        [action.name]: {}
+        [action.name]: {},
       };
     default:
       throw new Error();
@@ -56,14 +56,15 @@ const exportReducer = (state: ExportState, action: ExportAction) => {
 const initialExportState = {
   hero: "",
   pano: {},
-  exif: ""
+  exif: "",
 };
 
 const initialControlsState = {
   drawScale: 0.8,
   drawX: 1,
   drawY: 1,
-  showGuides: false
+  showGuides: false,
+  darkMode: true,
 };
 
 const AppLayout = styled(Div100vh)`
@@ -71,7 +72,7 @@ const AppLayout = styled(Div100vh)`
   grid-template-rows: 1fr auto;
 `;
 
-export const App: React.FC = () => {
+export default function Index() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [exif, setExif] = useState<Exif | null>(null);
   const [imageUrl, setImageUrl] = useState<string | undefined>();
@@ -88,7 +89,7 @@ export const App: React.FC = () => {
 
     // Get a Base64 url of the image
     const reader = new FileReader();
-    reader.onload = function() {
+    reader.onload = function () {
       setImageUrl(`${reader.result}`);
     };
     reader.readAsDataURL(file);
@@ -99,7 +100,7 @@ export const App: React.FC = () => {
     const fontFaceObservers = [
       { name: "Text", weight: "normal" },
       { name: "Text", weight: "bold" },
-      { name: "Text", weight: "bold", style: "italic" }
+      { name: "Text", weight: "bold", style: "italic" },
     ].map(({ name, ...data }) => {
       const obs = new FontFaceObserver(name, data);
       return obs.load();
@@ -115,14 +116,14 @@ export const App: React.FC = () => {
       src: exportState.hero,
       name: "Hero",
       width: POST_WIDTH,
-      height: POST_HEIGHT
+      height: POST_HEIGHT,
     },
     ...Object.keys(exportState.pano).map((index: any) => ({
       src: exportState.pano[index],
       name: `Pano ${index}`,
       width: POST_WIDTH,
-      height: POST_HEIGHT
-    }))
+      height: POST_HEIGHT,
+    })),
   ];
 
   if (exif) {
@@ -130,7 +131,7 @@ export const App: React.FC = () => {
       src: exportState.exif,
       name: "Exif",
       width: POST_WIDTH,
-      height: POST_HEIGHT
+      height: POST_HEIGHT,
     });
   }
 
@@ -159,6 +160,7 @@ export const App: React.FC = () => {
           drawX={controls.drawX}
           drawY={controls.drawY}
           showGuides={controls.showGuides}
+          darkMode={controls.darkMode}
           dispatch={dispatch}
         />
 
@@ -166,6 +168,7 @@ export const App: React.FC = () => {
           width={POST_WIDTH}
           height={POST_HEIGHT}
           imageUrl={imageUrl}
+          darkMode={controls.darkMode}
           dispatch={dispatch}
         />
 
@@ -180,4 +183,4 @@ export const App: React.FC = () => {
       </div>
     </>
   );
-};
+}

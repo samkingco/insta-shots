@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from "react";
-import { ExportAction } from "./App";
+import { useEffect, useRef, useState } from "react";
+import { ExportAction } from "../pages";
 
 interface DrawCoord {
   index: number;
@@ -13,6 +13,7 @@ interface Props {
   width: number;
   height: number;
   imageUrl?: string;
+  darkMode: boolean;
   dispatch: React.Dispatch<ExportAction>;
 }
 
@@ -20,9 +21,15 @@ interface CanvasProps extends Props {
   drawCoord: DrawCoord;
 }
 
-const Canvas: React.FC<CanvasProps> = props => {
+function Canvas({
+  width,
+  height,
+  imageUrl,
+  drawCoord,
+  darkMode,
+  dispatch,
+}: CanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { width, height, imageUrl, drawCoord, dispatch } = props;
 
   useEffect(() => {
     const img = new Image();
@@ -33,7 +40,7 @@ const Canvas: React.FC<CanvasProps> = props => {
     ctx.canvas.height = height;
     ctx.imageSmoothingEnabled = false;
 
-    img.onload = function() {
+    img.onload = function () {
       const canvasW = ctx.canvas.width;
       const canvasH = ctx.canvas.height;
 
@@ -41,7 +48,7 @@ const Canvas: React.FC<CanvasProps> = props => {
       ctx.clearRect(0, 0, canvasW, canvasH);
 
       // Draw the background
-      ctx.fillStyle = "white";
+      ctx.fillStyle = darkMode ? "black" : "white";
       ctx.fillRect(0, 0, canvasW, canvasH);
 
       // Draw the image
@@ -51,24 +58,29 @@ const Canvas: React.FC<CanvasProps> = props => {
         type: "setIndexedUrl",
         name: "pano",
         index: drawCoord.index,
-        url: canvasRef!.current!.toDataURL()
+        url: canvasRef!.current!.toDataURL(),
       });
     };
 
     img.src = imageUrl!;
-  }, [width, height, imageUrl, drawCoord, dispatch]);
+  }, [width, height, imageUrl, drawCoord, darkMode, dispatch]);
 
   return <canvas ref={canvasRef} />;
-};
+}
 
-export const CanvasPano: React.FC<Props> = props => {
-  const { width, height, imageUrl, dispatch } = props;
+export function CanvasPano({
+  width,
+  height,
+  imageUrl,
+  darkMode,
+  dispatch,
+}: Props) {
   const [drawCoords, setDrawCoords] = useState<DrawCoord[]>([]);
 
   useEffect(() => {
     const img = new Image();
 
-    img.onload = function() {
+    img.onload = function () {
       // Clear any previously drawn pano because the number
       // of canvas' could have changed
       dispatch({ type: "clearIndexed", name: "pano" });
@@ -89,7 +101,7 @@ export const CanvasPano: React.FC<Props> = props => {
           index,
           w: drawImageW,
           h: drawImageH,
-          y: 0
+          y: 0,
         };
         if (index === 0) return { ...base, x };
         return { ...base, x: x - canvasW * index };
@@ -111,10 +123,11 @@ export const CanvasPano: React.FC<Props> = props => {
             height={height}
             imageUrl={imageUrl}
             drawCoord={drawCoord}
+            darkMode={darkMode}
             dispatch={dispatch}
           />
         );
       })}
     </>
   );
-};
+}

@@ -1,4 +1,3 @@
-import React from "react";
 import { css } from "@emotion/core";
 import styled from "@emotion/styled";
 
@@ -23,7 +22,7 @@ const Wrapper = styled.div`
 `;
 
 const ScrollWrapper = styled.div<{ childrenCount: number }>(
-  p => css`
+  (p) => css`
     display: grid;
     grid-gap: 24px;
     grid-template-columns: 1px repeat(${p.childrenCount}, minmax(300px, 1fr)) 1px;
@@ -53,12 +52,11 @@ const Image = styled.img`
   height: auto;
 `;
 
-export const PostImages: React.FC<Props> = props => {
-  const { postImages } = props;
+export function PostImages({ postImages }: Props) {
   return (
     <Wrapper>
       <ScrollWrapper childrenCount={postImages.length}>
-        {postImages.map(image =>
+        {postImages.map((image) =>
           image.src ? (
             <ImageWrapper key={image.name}>
               <Image
@@ -74,4 +72,4 @@ export const PostImages: React.FC<Props> = props => {
       </ScrollWrapper>
     </Wrapper>
   );
-};
+}

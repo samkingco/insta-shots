@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export const Div100vh: React.FC = props => {
+export function Div100vh(props: any) {
   const [windowHeight, setWindowHeight] = useState(0);
 
   const updateWindowHeight = () => {
@@ -21,4 +21,4 @@ export const Div100vh: React.FC = props => {
       style={{ height: windowHeight ? `${windowHeight}px` : "100vh" }}
     />
   );
-};
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { ExportAction } from "./App";
+import { ExportAction } from "../pages";
 
 interface Props {
   width: number;
@@ -9,26 +9,27 @@ interface Props {
   drawX: number;
   drawY: number;
   showGuides: boolean;
+  darkMode: boolean;
   dispatch: React.Dispatch<ExportAction>;
 }
 
-export const CanvasHero: React.FC<Props> = (props: Props) => {
+export function CanvasHero({
+  width,
+  height,
+  imageUrl,
+  drawScale,
+  drawX,
+  drawY,
+  showGuides,
+  darkMode = true,
+  dispatch,
+}: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const {
-    width,
-    height,
-    imageUrl,
-    drawScale,
-    drawX,
-    drawY,
-    showGuides,
-    dispatch
-  } = props;
 
   useEffect(() => {
     const img = new Image();
 
-    img.onload = function() {
+    img.onload = function () {
       const ctx = canvasRef.current!.getContext("2d");
       if (!ctx || !canvasRef.current) return;
 
@@ -43,7 +44,7 @@ export const CanvasHero: React.FC<Props> = (props: Props) => {
       ctx.clearRect(0, 0, canvasW, canvasH);
 
       // Draw the background
-      ctx.fillStyle = "white";
+      ctx.fillStyle = darkMode ? "black" : "white";
       ctx.fillRect(0, 0, canvasW, canvasH);
 
       // Draw the image
@@ -55,7 +56,7 @@ export const CanvasHero: React.FC<Props> = (props: Props) => {
 
       // Draw guides
       if (showGuides) {
-        ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+        ctx.fillStyle = "rgba(255, 0, 0, 1)";
         ctx.fillRect(0, (canvasH - canvasW) / 2, canvasW, 1);
         ctx.fillRect(0, canvasW + (canvasH - canvasW) / 2, canvasW, 1);
       }
@@ -63,7 +64,7 @@ export const CanvasHero: React.FC<Props> = (props: Props) => {
       dispatch({
         type: "setUrl",
         name: "hero",
-        url: canvasRef!.current!.toDataURL()
+        url: canvasRef!.current!.toDataURL(),
       });
     };
 
@@ -76,9 +77,10 @@ export const CanvasHero: React.FC<Props> = (props: Props) => {
     drawX,
     drawY,
     showGuides,
+    darkMode,
     canvasRef,
-    dispatch
+    dispatch,
   ]);
 
   return <canvas ref={canvasRef} />;
-};
+}
