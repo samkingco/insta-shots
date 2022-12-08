@@ -10,8 +10,8 @@ import { GlobalStyles } from "../components/GlobalStyles";
 import { PostImages } from "../components/PostImages";
 import { Exif, getExifFromFile } from "../utils/exif";
 
-const POST_WIDTH = 1080;
-const POST_HEIGHT = 1350;
+const POST_WIDTH = 2160;
+const POST_HEIGHT = 2700;
 
 interface IndexedExport {
   [key: number]: string;
