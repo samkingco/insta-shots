@@ -8,7 +8,6 @@ specifiers:
   '@types/react': 16.9.1
   '@types/react-dom': 16.8.5
   date-fns: ^2.29.3
-  exif-js: ^2.3.0
   exifr: ^7.1.3
   fontfaceobserver: ^2.1.0
   next: ^13.0.6
@@ -20,7 +19,6 @@ dependencies:
   '@emotion/core': 10.3.1_react@18.2.0
   '@emotion/styled': 10.3.0_53jusob2jhmevmsrhkvbpx2hvm
   date-fns: 2.29.3
-  exif-js: 2.3.0
   exifr: 7.1.3
   fontfaceobserver: 2.3.0
   next: 13.0.6_biqbaboplfbrettd7655fr4n2y
@@ -446,10 +444,6 @@ packages:
   /escape-string-regexp/1.0.5:
     resolution: {integrity: sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg==}
     engines: {node: '>=0.8.0'}
-    dev: false
-
-  /exif-js/2.3.0:
-    resolution: {integrity: sha512-1Og9pAzG2FZRVlaavH8bB8BTeHcjMdJhKmeQITkX+uLRCD0xPtKAdZ2clZmQdJ56p9adXtJ8+jwrGp/4505lYg==}
     dev: false
 
   /exifr/7.1.3:
