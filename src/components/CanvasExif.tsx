@@ -31,7 +31,7 @@ export function CanvasExif({ width, height, exif, dispatch }: Props) {
 
     function renderLabel(text: string, x: number, y: number) {
       ctx!.fillStyle = "#A3A3A3";
-      ctx!.font = "40px/1 Mono";
+      ctx!.font = "80px/1 Mono";
       ctx!.textBaseline = "top";
       ctx!.fillText(text, x, y);
     }
@@ -43,9 +43,9 @@ export function CanvasExif({ width, height, exif, dispatch }: Props) {
       style: "normal" | "italic" | "mono" = "normal"
     ) {
       const fonts = {
-        normal: "bold 80px/1 Text",
-        italic: "italic bold 80px/1 Text",
-        mono: "normal 60px/1 Mono",
+        normal: "bold 160px/1 Text",
+        italic: "italic bold 160px/1 Text",
+        mono: "normal 120px/1 Mono",
       };
 
       ctx!.fillStyle = "#FFFFFF";
@@ -54,11 +54,11 @@ export function CanvasExif({ width, height, exif, dispatch }: Props) {
       ctx!.fillText(text, x, y);
     }
 
-    const spacingLeft = 80;
-    const dateLabelY = 300;
-    const exifLabelY = 540;
+    const spacingLeft = 160;
+    const dateLabelY = 600;
+    const exifLabelY = 1080;
     const valueLineY = (labelY: number, lineNumber: number) =>
-      labelY + 70 + lineNumber * 112;
+      labelY + 140 + lineNumber * 224;
 
     renderLabel("DATE", spacingLeft, dateLabelY);
     renderValue(exif.captureDate, spacingLeft, valueLineY(dateLabelY, 0));
