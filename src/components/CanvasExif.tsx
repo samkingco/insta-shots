@@ -69,7 +69,7 @@ export function CanvasExif({ width, height, exif, dispatch }: Props) {
     renderValue(exif.exposure, spacingLeft, valueLineY(exifLabelY, 2));
     renderValue(exif.iso, spacingLeft, valueLineY(exifLabelY, 3));
     renderValue(exif.camera, spacingLeft, valueLineY(exifLabelY, 4));
-    renderValue(exif.lens, spacingLeft, valueLineY(exifLabelY, 5));
+    exif.lens && renderValue(exif.lens, spacingLeft, valueLineY(exifLabelY, 5));
 
     dispatch({
       type: "setUrl",

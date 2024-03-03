@@ -3,10 +3,12 @@ import exifr from "exifr";
 
 const CAMERA_MAKE_MAP: Record<any, string> = {
   FUJIFILM: "Fujifilm",
+  "RICOH IMAGING COMPANY, LTD.": "Ricoh",
 };
 
 const CAMERA_MODEL_MAP: Record<any, string> = {
   "ILCE-7": "A7",
+  "RICOH GR III": "GR III",
 };
 
 const LENS_MAP: Record<any, string> = {
@@ -19,7 +21,7 @@ export type Exif = {
   exposure: string;
   iso: string;
   camera: string;
-  lens: string;
+  lens?: string;
   captureDate: string;
 };
 
@@ -30,14 +32,16 @@ export async function getExifFromFile(file: File): Promise<Exif | null> {
   const exposure = `1/${Math.floor(1 / exif.ExposureTime)}s`;
   const aperture = `ƒ/${exif.FNumber}`;
   const iso = `ISO ${exif.ISO}`;
-  const focal = `${exif.FocalLength}mm`;
+  const focal = `${exif.FocalLengthIn35mmFormat || exif.FocalLength}mm`;
 
   const camera = `${CAMERA_MAKE_MAP[exif.Make] || exif.Make} ${
     CAMERA_MODEL_MAP[exif.Model] || exif.Model
   }`;
-  const lens = `${CAMERA_MAKE_MAP[exif.LensMake] || exif.LensMake} ${
-    LENS_MAP[exif.LensModel] || exif.LensModel
-  }`;
+  const lens = exif.LensModel
+    ? `${CAMERA_MAKE_MAP[exif.LensMake] || exif.LensMake} ${
+        LENS_MAP[exif.LensModel] || exif.LensModel
+      }`
+    : undefined;
 
   const captureDate = format(new Date(exif.CreateDate), "yyyy-MM-dd");
 
